@@ -12,7 +12,6 @@ export default class Jump extends Trait {
 
     start() {
         this.engageTime = this.duration;
-        // console.log("Start",this.engageTime, this.duration)
     }
 
     cancel() {

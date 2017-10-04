@@ -1,5 +1,5 @@
 import {Trait} from '../Entity.js';
-import {g} from '../Level.js';
+
 export default class Animate extends Trait {
     constructor() {
         super('animate');
@@ -126,7 +126,7 @@ export default class Animate extends Trait {
       * or moving horizontally in the air.
       * If the entity IS crouching, the entity should NOT be able to move horizontally on their own.
       */
-      if(entity.vel.x === 0 && entity.go.dir === 0 && ( this.state_name !== "jump_" || entity.vel.y === g.globalGravity)){
+      if(entity.vel.x === 0 && entity.go.dir === 0 && ( this.state_name !== "jump_" || entity.vel.y === 0)){
         this.state_name = "idle_";
         this.frameID = 0;
         this.elapsedTime = 0;

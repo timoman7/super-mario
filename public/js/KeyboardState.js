@@ -8,22 +8,22 @@ export default class KeyboardState {
 
         // Holds the callback functions for a key code
         this.keyMap = new Map();
-        window.KeyboardState = this;
     }
 
-    addMapping(keyCode, callback) {
-        this.keyMap.set(keyCode, callback);
+    addMapping(code, callback) {
+        this.keyMap.set(code, callback);
     }
 
     handleEvent(event) {
-        const {keyCode} = event;
+        const {code} = event;
 
-        if (!this.keyMap.has(keyCode)) {
+        if (!this.keyMap.has(code)) {
             // Did not have key mapped.
             return;
         }
 
         event.preventDefault();
+
         const keyState = {
           value: (event.type === 'keydown' ? PRESSED : RELEASED),
           shiftKey: (event.shiftKey ? PRESSED : RELEASED),
@@ -31,15 +31,15 @@ export default class KeyboardState {
           ctrlKey: (event.ctrlKey ? PRESSED : RELEASED),
           metaKey: (event.metaKey ? PRESSED : RELEASED)
         };
-        if (this.keyStates.get(keyCode) !== undefined) {
-          if (this.keyStates.get(keyCode).value === keyState.value) {
+        if (this.keyStates.get(code) !== undefined) {
+          if (this.keyStates.get(code).value === keyState.value) {
               return;
           }
         }
 
-        this.keyStates.set(keyCode, keyState);
+        this.keyStates.set(code, keyState);
 
-        this.keyMap.get(keyCode)(keyState);
+        this.keyMap.get(code)(keyState);
     }
 
     listenTo(window) {

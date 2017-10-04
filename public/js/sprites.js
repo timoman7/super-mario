@@ -47,8 +47,6 @@ export function loadMarioSprite() {
         createSpriteSet(sprites, "run_b_l", 208, big_y, 16, big_height, 3, -1);
         sprites.define('jump_b_r', 330, big_y, 16, big_height);
         sprites.define('jump_b_l', 143, big_y, 16, big_height);
-
-        window.sprites = sprites;
         return sprites;
     });
 }

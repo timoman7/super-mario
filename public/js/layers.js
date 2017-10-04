@@ -1,5 +1,3 @@
-import {Matrix} from './math.js';
-
 export function createBackgroundLayer(level, sprites) {
     const buffer = document.createElement('canvas');
     buffer.width = 256;
@@ -25,33 +23,37 @@ export function createSpriteLayer(entities) {
 }
 
 export function createCollisionLayer(level) {
-    const tileCol = level.tileCollision;
+    const resolvedTiles = [];
 
-    const usedTiles = new Matrix();
+    const tileResolver = level.tileCollider.tiles;
+    const tileSize = tileResolver.tileSize;
 
-    const originalGetTile = tileCol.getTile;
-
-    tileCol.getTile = function fakeGetTile(x, y) {
-        usedTiles.set(x, y, true);
-        return originalGetTile.call(tileCol, x, y);
+    const getByIndexOriginal = tileResolver.getByIndex;
+    tileResolver.getByIndex = function getByIndexFake(x, y) {
+        resolvedTiles.push({x, y});
+        return getByIndexOriginal.call(tileResolver, x, y);
     }
 
-    return function drawCollisions(context) {
-        const ts = tileCol.tileSize;
+    return function drawCollision(context) {
+        context.strokeStyle = 'blue';
+        resolvedTiles.forEach(({x, y}) => {
+            context.beginPath();
+            context.rect(
+                x * tileSize,
+                y * tileSize,
+                tileSize, tileSize);
+            context.stroke();
+        });
 
-        // context.strokeStyle = 'blue';
-        // usedTiles.forEach((value, x, y) => {
-        //     context.beginPath();
-        //     context.rect(x * ts, y * ts, ts, ts);
-        //     context.stroke();
-        // });
-        usedTiles.clear();
+        context.strokeStyle = 'red';
+        level.entities.forEach(entity => {
+            context.beginPath();
+            context.rect(
+                entity.pos.x, entity.pos.y,
+                entity.size.x, entity.size.y);
+            context.stroke();
+        });
 
-        // context.strokeStyle = 'red';
-        // level.entities.forEach(entity => {
-        //     context.beginPath();
-        //     context.rect(entity.pos.x, entity.pos.y, entity.size.x, entity.size.y);
-        //     context.stroke();
-        // });
+        resolvedTiles.length = 0;
     };
 }

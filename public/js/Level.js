@@ -1,15 +1,16 @@
 import Compositor from './Compositor.js';
-import TileCollision from './TileCollision.js';
+import TileCollider from './TileCollider.js';
 import {Matrix} from './math.js';
 
-export const g={globalGravity: 0};
 export default class Level {
     constructor() {
+        this.gravity = 2000;
+
         this.comp = new Compositor();
         this.entities = new Set();
         this.tiles = new Matrix();
 
-        this.tileCollision = new TileCollision(this.tiles);
+        this.tileCollider = new TileCollider(this.tiles);
     }
 
     update(deltaTime) {
@@ -17,10 +18,12 @@ export default class Level {
             entity.update(deltaTime);
 
             entity.pos.x += entity.vel.x * deltaTime;
-            this.tileCollision.checkX(entity);
+            this.tileCollider.checkX(entity);
 
             entity.pos.y += entity.vel.y * deltaTime;
-            this.tileCollision.checkY(entity);
+            this.tileCollider.checkY(entity);
+
+            entity.vel.y += this.gravity * deltaTime;
         });
     }
 }
